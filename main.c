@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-/* cow without escaped characters:
+/* cow example
      \  ^__^
       \ (oo)\______
         (__)\      )\/\
@@ -56,7 +56,7 @@ figure_t supported_figures[4] = {
                      |_____|        |_____|         ~ - . _ _ _ _ _> \n",
     },
     (figure_t) {
-        .name = "head in but",
+        .name = "head",
         .body = "\n\
         \\                                    \n\
          \\                                   \n\
@@ -73,8 +73,7 @@ figure_t *figure_f = &supported_figures[0];
 int help_f = 0;
 
 
-void print_usage()
-{
+void print_usage() {
     printf("Usage: cowsay [FLAGS] args...\n\n");
     printf("Flags:\n");
     printf("\t-h help: show usage\n");
@@ -82,11 +81,10 @@ void print_usage()
     printf("\t\tcow\n");
     printf("\t\tdino\n");
     printf("\t\ttux\n");
-    printf("\t\thead in but\n");
+    printf("\t\thead\n");
 }
 
-void dashed_line(int l)
-{
+void ruler(int l) {
     printf(" ");
     for (int i = 0; i < l+2; i++)
         printf("_");
@@ -119,7 +117,9 @@ int parse_flags(int argc, char **argv) {
 
         if (starts_with(param, "h")) {
             help_f = 1;
-        } else if (starts_with(param, "f=")) {
+        }
+
+        if (starts_with(param, "f=")) {
             param+=2;
             for (int j = 0; j < sizeof(supported_figures)/sizeof(supported_figures[0]); j++) {
                 if (!strcmp(param, (const char *) supported_figures[j].name)) {
@@ -133,8 +133,7 @@ int parse_flags(int argc, char **argv) {
     return i;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     if (argc < 2) {
         print_usage();
         return 0;
@@ -148,10 +147,10 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    int lsize = strlen(argv[0]);
-    dashed_line(lsize);
+    int l = strlen(argv[0]);
+    ruler(l);
     printf("\n< %s >\n", argv[0]);
-    dashed_line(lsize);
+    ruler(l);
     printf("%s\n", figure_f->body);
 
     return 0;
