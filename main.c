@@ -70,13 +70,28 @@ figure_t supported_figures[4] = {
 
 // flags
 figure_t *figure_f = &supported_figures[0];
-int help_f = 0;
+int help_f = 0, color_f = 0;
 
+#define COLOR_COUNT 12
+const int colors[COLOR_COUNT] = {31, 32, 33, 34, 36, 37, 91, 92, 93, 94, 95, 96};
+
+void prints_color(char *s)
+{
+    if (color_f) {
+        for (int i = 0; i < strlen(s); i++) {
+            printf("\033[%dm%c", colors[i%COLOR_COUNT], s[i]);
+        }
+        printf("\033[0m"); // reset terminal properties
+    } else {
+        printf("%s", s);
+    }
+}
 
 void print_usage() {
     printf("Usage: cowsay [FLAGS] args...\n\n");
     printf("Flags:\n");
     printf("\t-h help: show usage\n");
+    printf("\t-c colorful output\n");
     printf("\t-f figure: choose from one of the available figures to say the words\n");
     printf("\t\tcow\n");
     printf("\t\tdino\n");
@@ -117,6 +132,12 @@ int parse_flags(int argc, char **argv) {
 
         if (starts_with(param, "h")) {
             help_f = 1;
+            continue;
+        }
+
+        if (starts_with(param, "c")) {
+            color_f = 1;
+            continue;
         }
 
         if (starts_with(param, "f=")) {
@@ -149,7 +170,9 @@ int main(int argc, char **argv) {
 
     int l = strlen(argv[0]);
     ruler(l);
-    printf("\n< %s >\n", argv[0]);
+    printf("\n< ");
+    prints_color(argv[0]);
+    printf(" >\n");
     ruler(l);
     printf("%s\n", figure_f->body);
 
